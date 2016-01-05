@@ -21,17 +21,21 @@ export class App extends Component {
     var self = this;
     var cursor = event.target.selectionStart;
 
-    // split on hr's
-    var regexp = /(?:\n){2,}^( *[-*_]){3,}(?:\n){2,}/gm;
+    // decide what counts as a page break
+    var regexp = /^( *[-*_]){3,}\n\n/gm;
     var pageBreak = event.target.value.match(regexp);
 
     if(pageBreak) {
-      var pageBreakPositions = [0]
+
+      // save the starting index of each page break as in integer
+      var fromIndex = 0, pageBreakPositions = [0];
       pageBreak.forEach(function(value, index, array) {
-        var pageBreakPosition = self.state.input.indexOf(value) + 2;
+        var pageBreakPosition = self.state.input.indexOf(value, fromIndex);
+        fromIndex = pageBreakPosition + 1;
         pageBreakPositions.push(pageBreakPosition);
       });
 
+      // go to the slide where the user has their cursor within the editor
       pageBreakPositions.forEach(function(value, index, array) {
         if(cursor >= value) {
           self.setState({
