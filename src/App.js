@@ -22,7 +22,7 @@ export class App extends Component {
     var cursor = event.target.selectionStart;
 
     // decide what counts as a page break
-    var regexp = /^( *[-*_]){3,}\n\n/gm;
+    var regexp = /\n\n( *[-*_]){3,}/gm;
     var pageBreak = event.target.value.match(regexp);
 
     if(pageBreak) {
@@ -32,7 +32,7 @@ export class App extends Component {
       pageBreak.forEach(function(value, index, array) {
         var pageBreakPosition = self.state.input.indexOf(value, fromIndex);
         fromIndex = pageBreakPosition + 1;
-        pageBreakPositions.push(pageBreakPosition);
+        pageBreakPositions.push(pageBreakPosition + value.length);
       });
 
       // go to the slide where the user has their cursor within the editor
@@ -51,7 +51,8 @@ export class App extends Component {
     var slides = markdown.split("<hr>");
     this.setState({
       input: event.target.value,
-      slides: slides
+      slides: slides,
+      slide: slides.length - 1
     })
   }
 
@@ -64,10 +65,17 @@ export class App extends Component {
   render() {
     var frameSrc = 'data:text/html;charset=UTF-8,<html><body class="slide-' + this.state.slide + '">' + (this.state.slides[this.state.slide] || '') + '</body></html>';
     return (
-      <div>
-        <textarea onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
-        <iframe ref="myIframe" src={frameSrc}></iframe>
-        <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+      <div className="container-fluid fullHeight">
+        <div className="row fullHeight">
+          <div className="col-xs-6 fullHeight">
+            <textarea className="fullHeight" onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
+          </div>
+          <div className="col-xs-6 fullHeight">
+            <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+            <br/>
+            <iframe ref="myIframe" src={frameSrc}></iframe>
+          </div>
+        </div>
       </div>
     );
   }

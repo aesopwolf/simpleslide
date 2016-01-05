@@ -1,0 +1,19 @@
+html, body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+.fullHeight {
+  height: 100%;
+}
+
+textarea {
+  width: 100%;
+  margin-left: -15px;
+  margin-right: -15px;
+  resize: none;
+  font-family: monospace;
+}
