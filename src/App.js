@@ -128,6 +128,20 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     })
   }
 
+  previousSlide() {
+    var length = this.state.slides.length - 1;
+    this.setState({
+      slide: this.state.slide - 1 >= 0 ? this.state.slide - 1 : 0
+    })
+  }
+
+  nextSlide() {
+    var length = this.state.slides.length - 1;
+    this.setState({
+      slide: this.state.slide + 1 <= length ? this.state.slide + 1 : length
+    })
+  }
+
   fullscreenToggle() {
     this.setState({
       fullscreen: !this.state.fullscreen
@@ -151,7 +165,19 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
             <span onClick={this.fullscreenToggle.bind(this)} className="fullscreenToggle glyphicon glyphicon-fullscreen" />
             <div className="alignerItem">
               <iframe ref="myIframe" src={frameSrc} style={{width: '100%'}}></iframe>
-              <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+
+              <div className="padding">
+                <div className="btn-group btn-group-justified">
+                  <div className="btn-group btn-group-xs">
+                    <button type="button" className="btn btn-default" onClick={this.previousSlide.bind(this)}><span className="glyphicon glyphicon-chevron-left" /></button>
+                  </div>
+                  <div className="btn-group btn-group-xs">
+                    <button type="button" className="btn btn-default" onClick={this.nextSlide.bind(this)}><span className="glyphicon glyphicon-chevron-right" /></button>
+                  </div>
+                </div>
+                <br />
+                <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+              </div>
             </div>
           </div>
         </div>

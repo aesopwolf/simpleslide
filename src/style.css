@@ -81,3 +81,7 @@ iframe {
   z-index: 1;
   background: #fff;
 }
+
+.padding {
+  padding: 1em;
+}

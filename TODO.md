@@ -4,11 +4,10 @@ TODO
 MVP:
 
 1.	better range input
-2.	add left right buttons
-3.	hide fullscreen toggle after 3 seconds of no mouse activity
-4.	display fullscreen toggle after mouse activity
-5.	default css
-6.	custom css
+2.	hide fullscreen toggle after 3 seconds of no mouse activity
+3.	display fullscreen toggle after mouse activity
+4.	default css
+5.	custom css
 
 Next version:
 
