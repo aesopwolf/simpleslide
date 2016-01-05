@@ -7,7 +7,25 @@ export class App extends Component {
     this.state = {
       markdown: '',
       slides: [''],
-      slide: 0
+      slide: 0,
+      input: `SimpleSlide
+-----------
+
+*SimpleSlide* is pretty easy to use:
+
+1. Enter markdown in the left pane
+1. Separate slides by using 3 or more asterisks (one of these: *)
+1. See the output as a slideshow in the right pane
+
+***
+
+Contact information
+-------------------
+
+If you have any questions you can email me at [aesopwolf@gmail.com](mailto:aesopwolf@gmail.com)
+
+Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
+`
     }
   }
 
@@ -46,6 +64,16 @@ export class App extends Component {
     }
   }
 
+  componentDidMount() {
+    var markdown = marked(this.state.input)
+    var slides = markdown.split("<hr>");
+    this.setState({
+      input: this.state.input,
+      slides: slides,
+      slide: 0
+    })
+  }
+
   handleMarkdown(event) {
     var markdown = marked(event.target.value)
     var slides = markdown.split("<hr>");
@@ -70,10 +98,11 @@ export class App extends Component {
           <div className="col-xs-6 fullHeight">
             <textarea className="fullHeight" onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
           </div>
-          <div className="col-xs-6 fullHeight">
-            <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
-            <br/>
-            <iframe ref="myIframe" src={frameSrc}></iframe>
+          <div className="col-xs-6 fullHeight preview aligner">
+            <div className="alignerItem">
+              <iframe ref="myIframe" src={frameSrc} style={{width: '100%'}}></iframe>
+              <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+            </div>
           </div>
         </div>
       </div>

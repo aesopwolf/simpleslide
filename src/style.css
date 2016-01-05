@@ -12,8 +12,50 @@ html, body {
 
 textarea {
   width: 100%;
-  margin-left: -15px;
-  margin-right: -15px;
   resize: none;
   font-family: monospace;
+  border: none;
+  background: #fff;
+  padding: 1em;
+}
+
+textarea:focus {outline:0;}
+
+.col-xs-6 {
+  padding: 0;
+}
+
+iframe {
+  border: none;
+  background-color: #fff;
+  width: 100%;
+  height: 30vw;
+}
+
+.preview {
+  background: rgba(147,128,108,.1);
+}
+
+.aligner {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-height: 24em;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.alignerItem {
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
+  width: 100%;
 }
