@@ -10,6 +10,7 @@ export class App extends Component {
       slides: [''],
       slide: 0,
       fullscreen: false,
+      editing: false,
       input: `SimpleSlide
 -----------
 
@@ -32,7 +33,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
   }
 
   handleKeypress(event) {
-    if(this.state.fullscreen) {
+    if(this.state.fullscreen || !this.state.editing) {
       var length = this.state.slides.length - 1;
       switch(event.keyCode) {
         case 37: // left arrow
@@ -89,6 +90,18 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     }
   }
 
+  editingMode() {
+    this.setState({
+      editing: true
+    })
+  }
+
+  notEditing() {
+    this.setState({
+      editing: false
+    })
+  }
+
   componentDidMount() {
     var markdown = marked(this.state.input)
     var slides = markdown.split("<hr>");
@@ -132,7 +145,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
         </If>
         <div className="row fullHeight">
           <div className="col-xs-6 fullHeight">
-            <textarea className="fullHeight" onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
+            <textarea className="fullHeight" onFocus={this.editingMode.bind(this)} onBlur={this.notEditing.bind(this)} onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
           </div>
           <div className="col-xs-6 fullHeight preview aligner">
             <span onClick={this.fullscreenToggle.bind(this)} className="fullscreenToggle glyphicon glyphicon-fullscreen" />

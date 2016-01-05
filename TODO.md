@@ -3,10 +3,12 @@ TODO
 
 MVP:
 
-1.	hide fullscreen toggle after 3 seconds of no mouse activity
-2.	display fullscreen toggle after mouse activity
-3.	default css
-4.	custom css
+1.	better range input
+2.	add left right buttons
+3.	hide fullscreen toggle after 3 seconds of no mouse activity
+4.	display fullscreen toggle after mouse activity
+5.	default css
+6.	custom css
 
 Next version:
 
@@ -16,3 +18,4 @@ Next version:
 4.	control slides from another tab (for mobile)
 5.	add support for math (probably through mathjax)
 6.	add IE support by ditching data uri
+7.	add grid view
