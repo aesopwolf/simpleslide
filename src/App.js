@@ -20,10 +20,11 @@ export class App extends Component {
   }
 
   render() {
+    var frameSrc = 'data:text/html;charset=UTF-8,<html><body>' + marked(this.state.markdown) + '</body></html>';
     return (
       <div>
         <textarea onChange={this.handleMarkdown.bind(this)} value={this.state.markdown}/>
-        <div dangerouslySetInnerHTML={this.createMarkup()} />
+        <iframe ref="myIframe" src={frameSrc}></iframe>
       </div>
     );
   }
