@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import marked from 'marked'
 
+import brace from 'brace';
+import AceEditor from 'react-ace';
+
+import 'brace/mode/css';
+import 'brace/theme/github';
+
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +17,14 @@ export class App extends Component {
       slide: 0,
       fullscreen: false,
       editing: false,
+      css: `html, body {
+  height: 100%
+}
+body {
+  background: #333;
+  color: #eee;
+}`,
+      mode: 'content',
       input: `SimpleSlide
 -----------
 
@@ -70,7 +84,6 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     var pageBreak = event.target.value.match(regexp);
 
     if(pageBreak) {
-
       // save the starting index of each page break as in integer
       var fromIndex = 0, pageBreakPositions = [0];
       pageBreak.forEach(function(value, index, array) {
@@ -117,14 +130,13 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     var slides = markdown.split("<hr>");
     this.setState({
       input: event.target.value,
-      slides: slides,
-      slide: slides.length - 1
+      slides: slides
     })
   }
 
   changeSlide(event) {
     this.setState({
-      slide: event.target.value
+      slide: parseInt(event.target.value, 10)
     })
   }
 
@@ -148,18 +160,50 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     })
   }
 
+  mode(mode) {
+    this.setState({
+      mode: mode
+    })
+  }
+
+  handleCSS(css) {
+    this.setState({
+      css: css
+    })
+  }
+
   render() {
-    var frameSrc = 'data:text/html;charset=UTF-8,<html><body class="slide-' + this.state.slide + '">' + (this.state.slides[this.state.slide] || '') + '</body></html>';
+    var frameSrc = 'data:text/html;charset=UTF-8,<html><body class="slide-' + this.state.slide + '">' + (this.state.slides[this.state.slide] || '') + '<style>' + this.state.css + '</style></body></html>';
     return (
       <div className="container-fluid fullHeight">
         <If condition={this.state.fullscreen}>
           <div className="fullscreen">
-            <iframe ref="myIframe" src={frameSrc} style={{width: '100%'}}></iframe>
+            <iframe className="fullHeight" ref="myIframe" src={frameSrc} style={{width: '100%'}}></iframe>
           </div>
         </If>
         <div className="row fullHeight">
           <div className="col-xs-6 fullHeight">
-            <textarea className="fullHeight" onFocus={this.editingMode.bind(this)} onBlur={this.notEditing.bind(this)} onChange={this.handleMarkdown.bind(this)} value={this.state.input} onClick={this.handleCursorPosition.bind(this)} onKeyUp={this.handleCursorPosition.bind(this)}/>
+            <ul className="nav nav-tabs">
+              <li className={this.state.mode == 'content' ? 'active' : ''}><a className="hover" onClick={this.mode.bind(this, 'content')}>Content</a></li>
+              <li className={this.state.mode == 'style' ? 'active' : ''}><a className="hover" onClick={this.mode.bind(this, 'style')}>Style</a></li>
+            </ul>
+            <If condition={this.state.mode === 'content'}>
+              <textarea style={{height: "calc(100% - 42px)"}} value={this.state.input} onFocus={this.editingMode.bind(this)} onBlur={this.notEditing.bind(this)} onChange={this.handleMarkdown.bind(this)} onClick={this.handleCursorPosition.bind(this)} onKeyPress={this.handleCursorPosition.bind(this)}/>
+            </If>
+            <If condition={this.state.mode === 'style'}>
+              <AceEditor
+                mode="css"
+                theme="github"
+                name="styleEditor"
+                height="calc(100% - 42px)"
+                width="100%"
+                onFocus={this.editingMode.bind(this)}
+                onBlur={this.notEditing.bind(this)}
+                onChange={this.handleCSS.bind(this)}
+                value={this.state.css}
+                editorProps={{$blockScrolling: true}}
+              />
+            </If>
           </div>
           <div className="col-xs-6 fullHeight preview aligner">
             <span onClick={this.fullscreenToggle.bind(this)} className="fullscreenToggle glyphicon glyphicon-fullscreen" />
@@ -167,6 +211,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
               <iframe ref="myIframe" src={frameSrc} style={{width: '100%'}}></iframe>
 
               <div className="padding">
+                <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
                 <div className="btn-group btn-group-justified">
                   <div className="btn-group btn-group-xs">
                     <button type="button" className="btn btn-default" onClick={this.previousSlide.bind(this)}><span className="glyphicon glyphicon-chevron-left" /></button>
@@ -175,8 +220,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
                     <button type="button" className="btn btn-default" onClick={this.nextSlide.bind(this)}><span className="glyphicon glyphicon-chevron-right" /></button>
                   </div>
                 </div>
-                <br />
-                <input type="range" name="points" min="0" max={this.state.slides.length - 1} onChange={this.changeSlide.bind(this)} value={this.state.slide}/>
+                <p className="text-center"><small>{(this.state.slide + 1)} / {this.state.slides.length}</small></p>
               </div>
             </div>
           </div>

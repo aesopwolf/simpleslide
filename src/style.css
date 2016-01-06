@@ -66,6 +66,8 @@ iframe {
   right: 0;
   padding: 10px;
   z-index: 2;
+  text-shadow: #fff 0px 0px 8px;
+  color: #000;
 }
 
 .fullscreenToggle:hover {
@@ -84,4 +86,8 @@ iframe {
 
 .padding {
   padding: 1em;
+}
+
+.hover:hover {
+  cursor: pointer;
 }
