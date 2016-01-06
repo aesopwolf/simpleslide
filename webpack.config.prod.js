@@ -26,9 +26,17 @@ module.exports = {
   ],
   module: {
     loaders: [{
-      test: /\.js$/,
+      test: /\.jsx?/,
       loaders: ['babel'],
       include: path.join(__dirname, 'src')
+    },
+    {
+      test: /\.css$/,
+      loader: "style!css"
+    },
+    {
+      test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
+      loader: 'url-loader?limit=30000&name=[name]-[hash].[ext]'
     }]
   }
 };
