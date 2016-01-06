@@ -21,8 +21,8 @@ export class App extends Component {
   height: 100%
 }
 body {
-  background: #333;
-  color: #eee;
+  background: #fff;
+  color: #333;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -36,6 +36,7 @@ body {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  font-size: 1.4em;
 }
 
 .slide {
@@ -47,7 +48,7 @@ body {
 }
 
 a {
-  color: #fff;
+  color: #333;
 }`,
       mode: 'content',
       input: `SimpleSlide
