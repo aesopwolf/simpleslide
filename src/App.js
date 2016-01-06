@@ -23,6 +23,31 @@ export class App extends Component {
 body {
   background: #333;
   color: #eee;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-height: 4em;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.slide {
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
+  max-width: 75%;
+}
+
+a {
+  color: #fff;
 }`,
       mode: 'content',
       input: `SimpleSlide
@@ -173,7 +198,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
   }
 
   render() {
-    var frameSrc = 'data:text/html;charset=UTF-8,<html><body class="slide-' + this.state.slide + '">' + (this.state.slides[this.state.slide] || '') + '<style>' + this.state.css + '</style></body></html>';
+    var frameSrc = 'data:text/html;charset=UTF-8,<html><body class="slide-' + this.state.slide + '"><div class="slide">' + (this.state.slides[this.state.slide] || '') + '</div><style>' + this.state.css + '</style></body></html>';
     return (
       <div className="container-fluid fullHeight">
         <If condition={this.state.fullscreen}>
