@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Easily create slides using markdown",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf static",
     "build:webpack": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js",
     "build": "npm run clean && npm run build:webpack",
     "start": "node devServer.js",
