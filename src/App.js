@@ -3,75 +3,41 @@ import marked from 'marked'
 
 import brace from 'brace';
 import AceEditor from 'react-ace';
-
 import 'brace/mode/css';
 import 'brace/theme/github';
+
+import * as defaults from './defaults';
 
 export class App extends Component {
   constructor(props) {
     super(props);
-    window.addEventListener('keydown', this.handleKeypress.bind(this));
+    
     this.state = {
-      markdown: '',
-      slides: [''],
-      slide: 0,
-      fullscreen: false,
+      css: defaults.css,
       editing: false,
-      css: `html, body {
-  height: 100%
-}
-body {
-  background: #fff;
-  color: #333;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  min-height: 4em;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  font-size: 1.4em;
-}
-
-.slide {
-  -webkit-box-flex: 0;
-  -webkit-flex: none;
-  -ms-flex: none;
-  flex: none;
-  max-width: 75%;
-}
-
-a {
-  color: #333;
-}`,
+      fullscreen: false,
+      input: defaults.input,
+      markdown: '',
       mode: 'content',
-      input: `SimpleSlide
------------
-
-*SimpleSlide* is pretty easy to use:
-
-1. Enter markdown in the left pane
-1. Separate slides by using 3 or more asterisks (one of these: *)
-1. See the output as a slideshow in the right pane
-
-***
-
-Contact information
--------------------
-
-If you have any questions you can email me at [aesopwolf@gmail.com](mailto:aesopwolf@gmail.com)
-
-Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
-`
+      slides: [''],
+      slide: 0
     };
+
+    // enable keyboard shortcuts
+    window.addEventListener('keydown', this.handleKeypress.bind(this));
   }
 
+  componentDidMount() {
+    var markdown = marked(this.state.input)
+    var slides = markdown.split("<hr>");
+    this.setState({
+      input: this.state.input,
+      slides: slides,
+      slide: 0
+    })
+  }
+
+  // keyboard shortcuts
   handleKeypress(event) {
     if(this.state.fullscreen || !this.state.editing) {
       var length = this.state.slides.length - 1;
@@ -95,12 +61,13 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     }
   }
 
+  // used to dangerouslysetinnerhtml
   createMarkup() {
     var html = marked(this.state.input)
     return {__html: html};
   }
 
-  // show the same rendered slide that the user is currently editing
+  // the preview panel should show the same slide that the user is editing
   handleCursorPosition(event) {
     var self = this;
     var cursor = event.target.selectionStart;
@@ -109,6 +76,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     var regexp = /\n\n( *[-*_]){3,}/gm;
     var pageBreak = event.target.value.match(regexp);
 
+    // we only need to run this if there are multiple slides
     if(pageBreak) {
       // save the starting index of each page break as in integer
       var fromIndex = 0, pageBreakPositions = [0];
@@ -129,30 +97,11 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     }
   }
 
-  editingMode() {
-    this.setState({
-      editing: true
-    })
-  }
-
-  notEditing() {
-    this.setState({
-      editing: false
-    })
-  }
-
-  componentDidMount() {
-    var markdown = marked(this.state.input)
-    var slides = markdown.split("<hr>");
-    this.setState({
-      input: this.state.input,
-      slides: slides,
-      slide: 0
-    })
-  }
-
+  // turn the input into actual markdown
   handleMarkdown(event) {
     var markdown = marked(event.target.value)
+
+    // we should split the slides based on <hr>'s
     var slides = markdown.split("<hr>");
     this.setState({
       input: event.target.value,
@@ -160,12 +109,14 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     })
   }
 
+  // change the slide using the input range element
   changeSlide(event) {
     this.setState({
       slide: parseInt(event.target.value, 10)
     })
   }
 
+  // go back a slide
   previousSlide() {
     var length = this.state.slides.length - 1;
     this.setState({
@@ -173,6 +124,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     })
   }
 
+  // advance to the next slide
   nextSlide() {
     var length = this.state.slides.length - 1;
     this.setState({
@@ -180,21 +132,31 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
     })
   }
 
+  // make the preview panel full screen (or not)
   fullscreenToggle() {
     this.setState({
       fullscreen: !this.state.fullscreen
     })
   }
 
-  mode(mode) {
+  // editing flag is set to disable/enable keyboard shortcuts
+  editingMode(editing) {
     this.setState({
-      mode: mode
+      editing: editing
     })
   }
 
+  // take input from the ace editor and save it to react state
   handleCSS(css) {
     this.setState({
       css: css
+    })
+  }
+
+  // is the user editing content or css?
+  mode(mode) {
+    this.setState({
+      mode: mode
     })
   }
 
@@ -214,7 +176,7 @@ Or you can [file a bug report](https://github.com/aesopwolf/simpleslide/issues)
               <li className={this.state.mode == 'style' ? 'active' : ''}><a className="hover" onClick={this.mode.bind(this, 'style')}>Style</a></li>
             </ul>
             <If condition={this.state.mode === 'content'}>
-              <textarea style={{height: "calc(100% - 42px)"}} value={this.state.input} onFocus={this.editingMode.bind(this)} onBlur={this.notEditing.bind(this)} onChange={this.handleMarkdown.bind(this)} onClick={this.handleCursorPosition.bind(this)} onKeyPress={this.handleCursorPosition.bind(this)}/>
+              <textarea style={{height: "calc(100% - 42px)"}} value={this.state.input} onFocus={this.editingMode.bind(this, true)} onBlur={this.editingMode.bind(this, false)} onChange={this.handleMarkdown.bind(this)} onClick={this.handleCursorPosition.bind(this)} onKeyPress={this.handleCursorPosition.bind(this)}/>
             </If>
             <If condition={this.state.mode === 'style'}>
               <AceEditor

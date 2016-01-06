@@ -3,7 +3,7 @@ TODO
 
 MVP:
 
-1.	setup a url
+1.	clean up code
 
 Next version:
 
